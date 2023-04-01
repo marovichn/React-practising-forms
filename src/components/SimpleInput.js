@@ -3,7 +3,8 @@ import { useState, useRef } from "react";
 const SimpleInput = (props) => {
   const nameInputRef = useRef();
   const [enteredName, setEnteredName] = useState("");
-  const [isValidInput, setIsValidInput] = useState(true);
+  const [isValidInput, setIsValidInput] = useState(false);
+  const [enteredNameTouched, setEnteredNameTouched] = useState(false);
 
   const onChangeHandler = (e) => {
     setEnteredName(e.target.value);
@@ -11,12 +12,10 @@ const SimpleInput = (props) => {
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
+    setEnteredNameTouched(true);
 
     if (enteredName.trim() === "") {
       setIsValidInput(false);
-      console.error(
-        "Invalid input!!!" + "( errorCheck: " + !isValidInput + " )"
-      );
 
       return;
     }
@@ -28,9 +27,11 @@ const SimpleInput = (props) => {
     setEnteredName("");
   };
 
-  const nameInputClasses = !isValidInput
-    ? "form-control invalid"
-    : "form-control";
+  const nameInputIsInvalid = !isValidInput && enteredNameTouched;
+
+  const nameInputClasses = !nameInputIsInvalid
+    ? "form-control"
+    : "form-control invalid";
 
   return (
     <form onSubmit={formSubmitHandler}>
@@ -44,7 +45,9 @@ const SimpleInput = (props) => {
           id="name"
         />
       </div>
-      {!isValidInput && <p className="error-text">This field is required*</p>}
+      {nameInputIsInvalid && (
+        <p className="error-text">This field is required*</p>
+      )}
       <div className="form-actions">
         <button>Submit</button>
       </div>
