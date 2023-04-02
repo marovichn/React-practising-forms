@@ -1,11 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState("");
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
+  const [formIsValid, setFormIsValid] = useState(false);
 
   const isValidInput = enteredName.trim() !== "";
   const nameInputIsInvalid = !isValidInput && enteredNameTouched;
+
+  useEffect(() => {
+    if (isValidInput) {
+      setFormIsValid(true);
+    } else {
+      setFormIsValid(false);
+    }
+  }, [isValidInput]);
 
   const nameInputClasses = !nameInputIsInvalid
     ? "form-control"
@@ -47,7 +56,7 @@ const SimpleInput = (props) => {
         <p className="error-text">This field is required*</p>
       )}
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );
