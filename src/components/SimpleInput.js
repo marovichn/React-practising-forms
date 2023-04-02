@@ -64,7 +64,7 @@ const SimpleInput = (props) => {
         <p className="error-text">This field is required*</p>
       )}
       <div className={emailInputClasses}>
-        <label htmlFor="name">Your Email</label>
+        <label htmlFor="name">Your E-mail</label>
         <input
           onBlur={emailInputBlurHandler}
           onChange={onEmailChangeHandler}
