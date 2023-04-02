@@ -1,37 +1,38 @@
 import { useEffect, useState } from "react";
+import useInput from "../Hooks/use-input";
 
 const SimpleInput = (props) => {
-  const [enteredName, setEnteredName] = useState("");
+  const nameValidate = (enteredName) => {
+    return enteredName.trim() !== "";
+  };
+  const {
+    value: enteredName,
+    hasError: nameInputIsInvalid,
+    valueIsValid: isValidInputName,
+    valueChangeHandler: onChangeHandler,
+    inputBlurHandler: nameInputBlurHandler,
+  } = useInput(nameValidate);
+
   const [enteredEmail, setEnteredEmail] = useState("");
-  const [enteredNameTouched, setEnteredNameTouched] = useState(false);
   const [enteredEmailTouched, setEnteredEmailTouched] = useState(false);
   /* const reg = /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/; */
 
-  const isValidInput = enteredName.trim() !== "";
   const isValidEmail = enteredEmail.includes("@");
-  const nameInputIsInvalid = !isValidInput && enteredNameTouched;
   const emailInputIsInvalid = !isValidEmail && enteredEmailTouched;
+
   let formIsValid = false;
 
-  if (isValidInput && isValidEmail) {
+  if (isValidInputName && isValidEmail) {
     formIsValid = true;
   }
 
   const nameInputClasses = !nameInputIsInvalid
     ? "form-control"
     : "form-control invalid";
+
   const emailInputClasses = !emailInputIsInvalid
     ? "form-control"
     : "form-control invalid";
-
-  const onChangeHandler = (e) => {
-    setEnteredName(e.target.value);
-    setEnteredNameTouched(true);
-  };
-
-  const nameInputBlurHandler = () => {
-    setEnteredNameTouched(true);
-  };
 
   const onEmailChangeHandler = (e) => {
     setEnteredEmail(e.target.value);
@@ -44,16 +45,13 @@ const SimpleInput = (props) => {
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
-    setEnteredNameTouched(true);
     setEnteredEmailTouched(true);
 
-    if (!isValidInput || !isValidEmail) {
+    if (!isValidInputName || !isValidEmail) {
       return;
     }
 
-    setEnteredNameTouched(false);
     setEnteredEmailTouched(false);
-    setEnteredName("");
     setEnteredEmail("");
   };
 
