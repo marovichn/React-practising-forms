@@ -10,8 +10,45 @@ const BasicForm = (props) => {
     reset: resetName,
   } = useInput((nameValue) => nameValue.trim() !== "");
   const nameClass = nameError ? "form-control invalid" : "form-control";
+
+  const {
+    value: lastNameValue,
+    hasError: lastNameError,
+    valueIsValid: lastNameIsValid,
+    valueChangeHandler: lastNameValueChangeHandler,
+    inputBlurHandler: lastNameInputBlurHandler,
+    reset: resetLastName,
+  } = useInput((lastNameValue) => lastNameValue.trim() !== "");
+  const lastNameClass = lastNameError ? "form-control invalid" : "form-control";
+
+  const {
+    value: emailValue,
+    hasError: emailError,
+    valueIsValid: emailIsValid,
+    valueChangeHandler: emailValueChangeHandler,
+    inputBlurHandler: emailInputBlurHandler,
+    reset: resetEmail,
+  } = useInput((emailValue) => emailValue.includes("@"));
+  const emailClass = emailError ? "form-control invalid" : "form-control";
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (!emailIsValid || !nameIsValid || !lastNameIsValid) {
+      return;
+    }
+
+    resetName();
+    resetLastName();
+    resetEmail();
+  };
+
+  let formIsValid = false;
+  if (emailIsValid && nameIsValid && lastNameIsValid) {
+    formIsValid = true;
+  }
+
   return (
-    <form>
+    <form onSubmit={submitHandler}>
       <div className="control-group">
         <div className={nameClass}>
           <label htmlFor="name">First Name</label>
@@ -24,17 +61,31 @@ const BasicForm = (props) => {
           />
           {nameError && <p className="error-text">Required field*</p>}
         </div>
-        <div className="form-control">
+        <div className={lastNameClass}>
           <label htmlFor="name">Last Name</label>
-          <input type="text" id="name" />
+          <input
+            onChange={lastNameValueChangeHandler}
+            onBlur={lastNameInputBlurHandler}
+            value={lastNameValue}
+            type="text"
+            id="name"
+          />
+          {lastNameError && <p className="error-text">Required field*</p>}
         </div>
       </div>
-      <div className="form-control">
+      <div className={emailClass}>
         <label htmlFor="name">E-Mail Address</label>
-        <input type="text" id="name" />
+        <input
+          onChange={emailValueChangeHandler}
+          onBlur={emailInputBlurHandler}
+          value={emailValue}
+          type="text"
+          id="name"
+        />
+        {emailError && <p className="error-text">Required field*</p>}
       </div>
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );
